@@ -1,0 +1,20 @@
+# Python virtual environment
+.venv/
+venv/
+
+# Compiled python files
+__pycache__/
+*.pyc
+
+# Machine learning models & temporary files (too large for git)
+models/*.joblib
+models/model_comparison.csv
+data/loan_clean.csv
+sample_test.csv
+
+# Figures (optional - comment these out if you want the images on GitHub)
+# figures/*.png
+
+# OS generated files
+.DS_Store
+Thumbs.db
