@@ -1,4 +1,4 @@
-"""Motz Financial Services — Loan Prediction Dashboard (Auto-Train & Fixed Demo)."""
+"""Motz Financial Services — Loan Prediction Dashboard (Final Dark Mode Fix)."""
 import joblib
 import numpy as np
 import pandas as pd
@@ -15,25 +15,77 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 
 # --------------------------------------------------------------------------- #
-# Page Config & Custom CSS
+# Page Config
 # --------------------------------------------------------------------------- #
 st.set_page_config(page_title="Motz Loan Predictor", page_icon="🏦", layout="wide", initial_sidebar_state="expanded")
 
+# --------------------------------------------------------------------------- #
+# HARD FORCE DARK MODE CSS
+# --------------------------------------------------------------------------- #
 st.markdown("""
 <style>
-    .stApp { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #f8fafc; }
-    .main-title { font-size: 2.5rem; font-weight: 700; background: -webkit-linear-gradient(45deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
-    .sub-title { font-size: 1.1rem; color: #94a3b8; margin-bottom: 2rem; }
-    .stSelectbox div[data-baseweb="select"], .stNumberInput div[data-baseweb="input"] { background-color: #0f172a !important; border: 1px solid #334155 !important; border-radius: 8px !important; }
-    .stButton > button { background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%); color: white; font-weight: 600; border: none; padding: 0.6rem 2rem; border-radius: 8px; transition: transform 0.2s, box-shadow 0.2s; width: 100%; }
-    .stButton > button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
+    /* Force the main background to be dark */
+    .stApp {
+        background-color: #0f172a !important;
+    }
+    
+    /* Force the sidebar to be dark */
+    [data-testid="stSidebar"] {
+        background-color: #1e293b !important;
+    }
+
+    /* Force ALL text to be white */
+    html, body, [class*="css"], p, h1, h2, h3, h4, h5, h6, label, span {
+        color: #f8fafc !important;
+    }
+
+    /* Header Styling */
+    .main-title { font-size: 2.5rem; font-weight: 700; color: #38bdf8 !important; margin-bottom: 0.5rem; }
+    .sub-title { font-size: 1.1rem; color: #94a3b8 !important; margin-bottom: 2rem; }
+    
+    /* FORCE ALL INPUT BOXES TO BE DARK GRAY WITH WHITE TEXT */
+    div[data-baseweb="select"] > div,
+    div[data-baseweb="input"] > div,
+    input {
+        background-color: #1e293b !important; 
+        color: #f8fafc !important;            
+        border: 1px solid #334155 !important; 
+    }
+    
+    /* Dropdown menu background */
+    ul[data-baseweb="menu"] {
+        background-color: #1e293b !important;
+    }
+    ul[data-baseweb="menu"] li {
+        color: #f8fafc !important;
+    }
+    
+    /* Button Styling */
+    .stButton > button { 
+        background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%); 
+        color: white !important; 
+        font-weight: 600; 
+        border: none; 
+        padding: 0.6rem 2rem; 
+        border-radius: 8px; 
+        transition: transform 0.2s, box-shadow 0.2s; 
+        width: 100%; 
+    }
+    .stButton > button:hover { 
+        transform: translateY(-2px); 
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); 
+    }
+    
+    /* Result Boxes */
     .result-success { background: linear-gradient(90deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%); border-left: 5px solid #10b981; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; }
     .result-danger { background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, rgba(185, 28, 28, 0.1) 100%); border-left: 5px solid #ef4444; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; }
-    .footer { text-align: center; color: #94a3b8; font-size: 0.9rem; padding: 2rem 0 1rem 0; margin-top: 3rem; border-top: 1px solid #334155; }
+    
+    /* Footer */
+    .footer { text-align: center; color: #94a3b8 !important; font-size: 0.9rem; padding: 2rem 0 1rem 0; margin-top: 3rem; border-top: 1px solid #334155; }
 </style>
 """, unsafe_allow_html=True)
 
-# Custom feature engineering function (Baked in so we don't need the src folder)
+# Feature engineering function
 def engineer_features(df):
     df = df.copy()
     df['TotalIncome'] = df['ApplicantIncome'] + df['CoapplicantIncome']
@@ -49,10 +101,8 @@ def engineer_features(df):
 def get_model_and_metrics():
     model_path = "loan_model.pkl"
     
-    # If model doesn't exist on the cloud, train it right now!
     if not os.path.exists(model_path):
         try:
-            # Look for the CSV in the root or data folder
             if os.path.exists("loan_data_set.csv"):
                 df = pd.read_csv("loan_data_set.csv")
             elif os.path.exists("data/loan_data_set.csv"):
@@ -127,7 +177,6 @@ def get_model_and_metrics():
         metrics_df = pd.DataFrame(results).set_index('Model')
         return best_pipeline, metrics_df
     else:
-        # If model exists, recreate the metrics for the sidebar
         metrics_data = {
             'LogisticRegression': [0.862, 0.840, 0.988, 0.908, 0.844], 
             'RandomForest': [0.797, 0.866, 0.835, 0.850, 0.831], 
@@ -146,11 +195,16 @@ with st.sidebar:
     st.markdown("### Model Performance")
     st.markdown("---")
     if not metrics_df.empty:
-        st.dataframe((metrics_df * 100).round(1).style.highlight_max(axis=0, color='#3b82f6').format("{:.1f}%"))
+        st.dataframe(
+            (metrics_df * 100).round(1).style
+            .highlight_max(axis=0, color='#3b82f6')
+            .format("{:.1f}%")
+        )
     else:
         st.info("Model metrics not available.")
+    
     st.markdown("---")
-    st.info("This tool uses a **Logistic Regression** model. It assists loan officers and should not be used as the sole basis for approval.")
+    st.info("This tool uses a Logistic Regression model. It assists loan officers and should not be used as the sole basis for approval.")
 
 # --------------------------------------------------------------------------- #
 # Main UI
@@ -173,11 +227,12 @@ with col_form:
         st.markdown("---")
         st.markdown("**Financial Details**")
         c4, c5 = st.columns(2)
-        applicant_income = c4.number_input("Applicant Income (Monthly)", min_value=0, value=5000, step=500)
+        
+        applicant_income = c4.number_input("Applicant Income (Monthly)", min_value=1000, value=5000, step=500)
         coapplicant_income = c5.number_input("Co-applicant Income (Monthly)", min_value=0, value=0, step=500)
         
         c6, c7 = st.columns(2)
-        loan_amount = c6.number_input("Loan Amount (Thousands)", min_value=1, value=120, step=10)
+        loan_amount = c6.number_input("Loan Amount (e.g. 120000)", min_value=10000, value=120000, step=10000)
         loan_term = c7.selectbox("Loan Term (Months)", [360, 180, 120, 240, 300, 480, 84, 60, 36, 12])
         
         st.markdown("---")
@@ -204,7 +259,8 @@ with col_res:
             "Gender": gender, "Married": married, "Dependents": dependents,
             "Education": education, "Self_Employed": self_emp,
             "ApplicantIncome": float(applicant_income), "CoapplicantIncome": float(coapplicant_income),
-            "LoanAmount": float(loan_amount), "Loan_Amount_Term": float(loan_term),
+            "LoanAmount": float(loan_amount) / 1000, 
+            "Loan_Amount_Term": float(loan_term),
             "Credit_History": credit_history_val,
             "Property_Area": property_area,
         }])
@@ -249,8 +305,6 @@ with col_res:
                 st.success("✅ **Credit History:** A good CIBIL score strongly supports approval.")
             if proba < 0.3:
                 st.write("⚠️ **Income/Loan Ratio:** The requested loan amount may be too high relative to income.")
-            if education == "Not Graduate":
-                st.write("ℹ️ **Education:** Not being a graduate marginally reduces approval odds.")
         
         st.markdown("---")
         download_row = row.copy()
@@ -283,26 +337,21 @@ with st.expander("🧪 Test Model on Historical Data (Examiner Demo)"):
                 true_labels = test_clean["Loan_Status"].map({"Y": 1, "N": 0})
                 test_clean = test_clean.drop(columns=["Loan_Status"])
                 
-            # Apply feature engineering
             test_feat = engineer_features(test_clean)
             
-            # Define the exact columns the model expects (FIXES THE BUG)
             expected_cols = ["Gender","Married","Dependents","Education","Self_Employed",
                              "ApplicantIncome","CoapplicantIncome","LoanAmount","Loan_Amount_Term",
                              "Credit_History","Property_Area","TotalIncome","LoanAmount_log","EMI","Balance_Income"]
             
             test_feat = test_feat[expected_cols]
             
-            # Make predictions
             preds = model.predict(test_feat)
             probs = model.predict_proba(test_feat)[:, 1]
             
-            # Create output dataframe
             out_df = test_df.copy()
             out_df["Predicted_Status"] = ["Y" if p == 1 else "N" for p in preds]
             out_df["Approval_Probability"] = (probs * 100).round(1)
             
-            # Display the first 10 rows and the accuracy if true labels exist
             st.dataframe(out_df.head(10))
             st.download_button("📥 Download Full Predictions", data=out_df.to_csv(index=False).encode('utf-8'), file_name='loan_predictions.csv', mime='text/csv')
             
