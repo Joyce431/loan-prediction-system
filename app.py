@@ -24,26 +24,28 @@ st.set_page_config(page_title="Motz Loan Predictor", page_icon="🏦", layout="w
 # --------------------------------------------------------------------------- #
 st.markdown("""
 <style>
-    /* Force the main background to be dark */
-    .stApp {
-        background-color: #0f172a !important;
-    }
-    
-    /* Force the sidebar to be dark */
-    [data-testid="stSidebar"] {
-        background-color: #1e293b !important;
+    /* 1. FORCE GLOBAL BACKGROUND TO BE DARK */
+    .stApp, [data-testid="stAppViewContainer"] {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
     }
 
-    /* Force ALL text to be white */
-    html, body, [class*="css"], p, h1, h2, h3, h4, h5, h6, label, span {
+    /* 2. FORCE ALL TEXT TO BE WHITE */
+    html, body, [class*="css"], p, h1, h2, h3, h4, h5, h6, label {
         color: #f8fafc !important;
     }
 
-    /* Header Styling */
-    .main-title { font-size: 2.5rem; font-weight: 700; color: #38bdf8 !important; margin-bottom: 0.5rem; }
+    /* 3. HEADER STYLING */
+    .main-title { 
+        font-size: 2.5rem; 
+        font-weight: 700; 
+        background: -webkit-linear-gradient(45deg, #38bdf8, #818cf8); 
+        -webkit-background-clip: text; 
+        -webkit-text-fill-color: transparent; 
+        margin-bottom: 0.5rem; 
+    }
     .sub-title { font-size: 1.1rem; color: #94a3b8 !important; margin-bottom: 2rem; }
     
-    /* FORCE ALL INPUT BOXES TO BE DARK GRAY WITH WHITE TEXT */
+    /* 4. FORCE INPUT BOXES TO BE DARK GRAY WITH WHITE TEXT */
     div[data-baseweb="select"] > div,
     div[data-baseweb="input"] > div,
     input {
@@ -52,7 +54,10 @@ st.markdown("""
         border: 1px solid #334155 !important; 
     }
     
-    /* Dropdown menu background */
+    /* 5. FIX DROPDOWN TEXT */
+    div[data-baseweb="select"] > div > div {
+        color: #f8fafc !important;
+    }
     ul[data-baseweb="menu"] {
         background-color: #1e293b !important;
     }
@@ -60,7 +65,7 @@ st.markdown("""
         color: #f8fafc !important;
     }
     
-    /* Button Styling */
+    /* 6. BUTTON STYLING */
     .stButton > button { 
         background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%); 
         color: white !important; 
@@ -76,12 +81,31 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); 
     }
     
-    /* Result Boxes */
-    .result-success { background: linear-gradient(90deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%); border-left: 5px solid #10b981; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; }
-    .result-danger { background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, rgba(185, 28, 28, 0.1) 100%); border-left: 5px solid #ef4444; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; }
+    /* 7. RESULT BOXES */
+    .result-success { 
+        background: linear-gradient(90deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%); 
+        border-left: 5px solid #10b981; 
+        padding: 1.5rem; 
+        border-radius: 8px; 
+        margin-top: 1rem; 
+    }
+    .result-danger { 
+        background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, rgba(185, 28, 28, 0.1) 100%); 
+        border-left: 5px solid #ef4444; 
+        padding: 1.5rem; 
+        border-radius: 8px; 
+        margin-top: 1rem; 
+    }
     
-    /* Footer */
-    .footer { text-align: center; color: #94a3b8 !important; font-size: 0.9rem; padding: 2rem 0 1rem 0; margin-top: 3rem; border-top: 1px solid #334155; }
+    /* 8. FOOTER */
+    .footer { 
+        text-align: center; 
+        color: #94a3b8 !important; 
+        font-size: 0.9rem; 
+        padding: 2rem 0 1rem 0; 
+        margin-top: 3rem; 
+        border-top: 1px solid #334155; 
+    }
 </style>
 """, unsafe_allow_html=True)
 
